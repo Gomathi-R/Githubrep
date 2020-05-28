@@ -1,0 +1,29 @@
+pipeline { agent any; stages {
+    stage("BACKUP"){ steps{
+    sh """#!/bin/bash
+    pushd backup_config
+    sudo git config --local user.email "mahes.sharma23@gmail.com"
+    sudo git config --global user.name "Smaheshwar85"
+    find .|xargs git rm
+    popd
+    cp -v var/lib/jenkins/*xml $WORKSPACE/backup_config
+    pushd var/lib/jenkins/
+    for i in \$( find jobs|grep config.xml ); do
+      mkdir -p $WORKSPACE/backup_config/`dirname \$i`
+      cp \$i $WORKSPACE/backup_config/`dirname \$i`
+    done
+    popd
+    cp -rfv var/lib/jenkins/secret* $WORKSPACE/backup_config/
+    cp -rfv var/lib/jenkins/user* $WORKSPACE/backup_config/
+    pushd backup_config
+    find .|xargs git add
+    sudo git commit -a -m"Jenkins Backup Job"
+    """
+  }} //steps // stage
+
+  stage("PUSH"){ steps{
+    sshagent(["$GIT_CREDENTIAL_ID"]) {
+      sh "cdbackup_config && git push origin HEAD:$BACKUP_BRANCH"
+    } // sshagent
+  }} //steps // stage
+}} //stages // pipeline

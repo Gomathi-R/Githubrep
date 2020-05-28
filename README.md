@@ -1,4 +1,7 @@
-# Githubrep
-Repository for learning
-Changes have been done
-done
+# easeWithbase
+
+we are learning git
+
+git we are in branch code-2105
+
+eertuyiop[][poiuytrtyuiop[]\fhjhlkj/kml;;lkml'p,',{O
